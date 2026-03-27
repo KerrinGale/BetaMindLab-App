@@ -57,7 +57,7 @@ export default function DashboardPage() {
   const avgs: Record<string, number> = {};
   keys.forEach((k) => {
     const vals = filtered
-      .map(([, e]) => mode === "morning" ? (e.morning as Record<string, number> | undefined)?.[k] : (e.evening as Record<string, number> | undefined)?.[k])
+      .map(([, e]) => mode === "morning" ? (e.morning as unknown as Record<string, number> | undefined)?.[k] : (e.evening as unknown as Record<string, number> | undefined)?.[k])
       .filter((v): v is number => v != null);
     avgs[k] = average(vals);
   });

@@ -52,7 +52,7 @@ export default function InsightsPage() {
 
     const corrs: Correlation[] = [];
     for (const key of MORNING_KEYS) {
-      const xs = paired.map((e) => (e.morning as Record<string, number>)[key]);
+      const xs = paired.map((e) => (e.morning as unknown as Record<string, number>)[key]);
       const ys = paired.map((e) => e.evening!.performance);
       const r = pearson(xs, ys);
       const abs = Math.abs(r);
