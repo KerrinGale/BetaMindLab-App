@@ -81,3 +81,46 @@ export function getStorageUsedPct(): number {
 export function todayStr(): string {
   return new Date().toISOString().slice(0, 10);
 }
+
+// ── Goals ────────────────────────────────────────────────────────────────────
+
+export interface Goal {
+  id: string;
+  text: string;
+  type: "longterm" | "daily";
+  date?: string; // YYYY-MM-DD, only for daily goals
+  completed: boolean;
+  createdAt: string;
+  category?: string; // optional tag for long-term goals
+}
+
+const GOALS_KEY = "mindloop-goals";
+
+export function getGoals(): Goal[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(GOALS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+export function saveGoals(goals: Goal[]) {
+  localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
+}
+
+export function addGoal(goal: Omit<Goal, "id" | "createdAt">): Goal {
+  const goals = getGoals();
+  const newGoal: Goal = { ...goal, id: Date.now().toString(), createdAt: new Date().toISOString() };
+  saveGoals([...goals, newGoal]);
+  return newGoal;
+}
+
+export function toggleGoal(id: string) {
+  const goals = getGoals();
+  saveGoals(goals.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g)));
+}
+
+export function deleteGoal(id: string) {
+  saveGoals(getGoals().filter((g) => g.id !== id));
+}
